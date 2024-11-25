@@ -1,106 +1,65 @@
-#include "CompleteBinaryTree.h"
+#include "Tree.h"
 #include <iostream>
-#include <string>
 
 using namespace std;
 
-// Функция для удаления элемента из дерева
-template <typename T>
-void Tremove(CompleteBinaryTree<T>& tree, const T& value) {
-    int index = -1;
-    for (int i = 0; i < tree.size; i++) {
-        if (tree.tree[i] == value) {
-            index = i;
-            break;
-        }
-    }
-
-    if (index == -1) {
-        cout << "Элемент не найден в дереве.\n";
-        return;
-    }
-
-    // Заменяем удаляемый элемент последним элементом в дереве
-    tree.tree[index] = tree.tree[tree.size - 1];
-    tree.size--;
-
-    // Восстанавливаем свойства бинарного дерева поиска
-    while (true) {
-        int leftChild = 2 * index + 1;
-        int rightChild = 2 * index + 2;
-        int smallest = index;
-
-        if (leftChild < tree.size && tree.tree[leftChild] < tree.tree[smallest]) {
-            smallest = leftChild;
-        }
-        if (rightChild < tree.size && tree.tree[rightChild] < tree.tree[smallest]) {
-            smallest = rightChild;
-        }
-
-        if (smallest != index) {
-            swap(tree.tree[index], tree.tree[smallest]);
-            index = smallest;
-        } else {
-            break;
-        }
-    }
-}
-
 int main() {
-    int capacity;
-    cout << "Введите максимальный размер дерева: ";
-    cin >> capacity;
-
-    CompleteBinaryTree<int> tree(capacity);
+    BinarySearchTree<int> bst;
+    int choice, value;
 
     while (true) {
-        cout << "\nВыберите действие:\n";
+        cout << "\nВыберите операцию:\n";
         cout << "1. Вставить элемент\n";
-        cout << "2. Удалить элемент\n";
-        cout << "3. Найти элемент\n";
+        cout << "2. Найти элемент\n";
+        cout << "3. Удалить элемент\n";
         cout << "4. Вывести дерево\n";
-        cout << "5. Загрузить дерево из файла\n";
-        cout << "6. Сохранить дерево в файл\n";
+        cout << "5. Считать дерево из файла\n";
+        cout << "6. Записать дерево в файл\n";
         cout << "7. Выход\n";
-
-        int choice;
+        cout << "Ваш выбор: "; 
         cin >> choice;
 
-        if (choice == 1) {
-            int value;
-            cout << "Введите значение для вставки: ";
-            cin >> value;
-            tree.Tinsert(value);
-        } else if (choice == 2) {
-            int value;
-            cout << "Введите значение для удаления: ";
-            cin >> value;
-            Tremove(tree, value);
-        } else if (choice == 3) {
-            int value;
-            cout << "Введите значение для поиска: ";
-            cin >> value;
-            if (tree.Tsearch(value)) {
-                cout << "Элемент найден в дереве.\n";
-            } else {
-                cout << "Элемент не найден в дереве.\n";
+        switch (choice) {
+            case 1:
+                cout << "Введите значение для вставки: ";
+                cin >> value;
+                bst.Tinsert(value);
+                break;
+            case 2:
+                cout << "Введите значение для поиска: ";
+                cin >> value;
+                if (bst.Tsearch(value)) {
+                    cout << "Значение найдено в дереве.\n";
+                } else {
+                    cout << "Значение не найдено в дереве.\n";
+                }
+                break;
+            case 3:
+                cout << "Введите значение для удаления: ";
+                cin >> value;
+                bst.Tremove(value);
+                break;
+            case 4:
+                bst.Tprint();
+                break;
+            case 5: {
+                cout << "Введите имя файла для чтения: ";
+                string readFilename;
+                cin >> readFilename;
+                bst.TreadFromFile(readFilename);
+                break;
             }
-        } else if (choice == 4) {
-            tree.Tprint();
-        } else if (choice == 5) {
-            string filename;
-            cout << "Введите имя файла для загрузки: ";
-            cin >> filename;
-            tree.TreadFromFile(filename);
-        } else if (choice == 6) {
-            string filename;
-            cout << "Введите имя файла для сохранения: ";
-            cin >> filename;
-            tree.TwriteToFile(filename);
-        } else if (choice == 7) {
-            break;
-        } else {
-            cout << "Неверный выбор. Попробуйте снова.\n";
+            case 6: {
+                cout << "Введите имя файла для записи: ";
+                string writeFilename;
+                cin >> writeFilename;
+                bst.TwriteToFile(writeFilename);
+                break;
+            }
+            case 7:
+                return 0;
+            default:
+                cout << "Неверный выбор. Попробуйте снова.\n";
         }
     }
 
